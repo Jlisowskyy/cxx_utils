@@ -6,6 +6,7 @@
 #include <mutex>
 #include <semaphore>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <CxxUtils/defines.hpp>
@@ -55,6 +56,20 @@ class ThreadPool
     };
 
     public:
+    struct AsyncBlob {
+        void Await()
+        {
+            assert(!m_wasWaited);
+            m_semaphore.acquire();
+            m_wasWaited = true;
+        }
+
+        private:
+        friend ThreadPool;
+        sem_t m_semaphore{0};
+        bool m_wasWaited = false;
+    };
+
     // ------------------------------
     // Class creation
     // ------------------------------
@@ -77,7 +92,7 @@ class ThreadPool
         assert(!m_wasRun && "Detected double run on thread pool");
 
         for (uint32_t thread_idx = 0; thread_idx < m_numThreads; ++thread_idx) {
-            std::lock_guard lock(m_globalMutex);
+            const std::lock_guard lock(m_globalMutex);
 
             m_globalTasks.emplace_back(std::make_unique<_task<FuncT, Args...> >(
                 &m_localJobsSemaphore, thread_idx, std::forward<FuncT>(func), std::forward<Args>(args)...
@@ -86,6 +101,22 @@ class ThreadPool
 
         m_globalJobsSemaphore.release(m_numThreads);
         m_wasRun = true;
+    }
+
+    template <class FuncT, class... Args>
+    static std::unique_ptr<AsyncBlob> ScheduleJobAsync(FuncT &&func, Args &&...args)
+    {
+        auto blob = std::make_unique<AsyncBlob>();
+
+        {
+            const std::lock_guard lock(m_globalMutex);
+
+            m_globalTasks.emplace_back(std::make_unique<_task<FuncT, Args...> >(
+                &blob->m_semaphore, 0, std::forward<FuncT>(func), std::forward<Args>(args)...
+            ));
+        }
+
+        return std::move(blob);
     }
 
     void Wait();
