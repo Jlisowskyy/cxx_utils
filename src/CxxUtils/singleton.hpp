@@ -4,13 +4,12 @@
 #include <CxxUtils/defines.hpp>
 
 #include <cassert>
+#include <memory>
 
 CXX_UTILS_DECL_START_
 
 template <typename T>
 struct Singleton {
-    ~Singleton() { delete _instance; }
-
     // Access the instance, NOTE: _instance needs to be initialized before usage
     static T &GetInstance()
     {
