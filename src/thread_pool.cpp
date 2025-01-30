@@ -46,6 +46,7 @@ void ThreadPool::_tryExtendingGlobalWorkers(const size_t num_workers)
         _addGlobalWorkers(num_workers - m_globalThreads.size());
     }
 }
+
 void ThreadPool::_addGlobalWorkers(size_t num_workers)
 {
     while (num_workers-- > 0) {
@@ -58,6 +59,7 @@ void ThreadPool::_addGlobalWorkers(size_t num_workers)
         });
     }
 }
+
 void ThreadPool::_globalWorkerThread()
 {
     while (!m_shouldStop) {
