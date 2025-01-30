@@ -7,13 +7,13 @@
 #include <thread>
 #include <vector>
 
-std::vector<std::shared_ptr<std::thread>> ThreadPool::m_globalThreads{};
-volatile std::atomic<bool> ThreadPool::m_shouldStop{false};
-ThreadPool::sem_t ThreadPool::m_globalJobsSemaphore{0};
-std::mutex ThreadPool::m_globalMutex{};
-std::vector<std::unique_ptr<ThreadPool::_taskBase>> ThreadPool::m_globalTasks{};
+std::vector<std::shared_ptr<std::thread>> CxxUtils::ThreadPool::m_globalThreads{};
+volatile std::atomic<bool> CxxUtils::ThreadPool::m_shouldStop{false};
+CxxUtils::ThreadPool::sem_t CxxUtils::ThreadPool::m_globalJobsSemaphore{0};
+std::mutex CxxUtils::ThreadPool::m_globalMutex{};
+std::vector<std::unique_ptr<CxxUtils::ThreadPool::_taskBase>> CxxUtils::ThreadPool::m_globalTasks{};
 
-void ThreadPool::Wait()
+void CxxUtils::ThreadPool::Wait()
 {
     assert(!m_wasWaited && "Detected double wait on thread pool");
     assert(m_wasRun && "Detected wait without run on thread pool");
@@ -25,7 +25,7 @@ void ThreadPool::Wait()
     }
 }
 
-void ThreadPool::Reset(const uint32_t numThreads)
+void CxxUtils::ThreadPool::Reset(const uint32_t numThreads)
 {
     assert(m_wasRun && m_wasWaited && "Detected reset without wait on thread pool");
 
@@ -38,7 +38,7 @@ void ThreadPool::Reset(const uint32_t numThreads)
     m_wasWaited  = false;
 }
 
-void ThreadPool::_tryExtendingGlobalWorkers(const size_t num_workers)
+void CxxUtils::ThreadPool::_tryExtendingGlobalWorkers(const size_t num_workers)
 {
     std::lock_guard lock(m_globalMutex);
 
@@ -47,7 +47,7 @@ void ThreadPool::_tryExtendingGlobalWorkers(const size_t num_workers)
     }
 }
 
-void ThreadPool::_addGlobalWorkers(size_t num_workers)
+void CxxUtils::ThreadPool::_addGlobalWorkers(size_t num_workers)
 {
     while (num_workers-- > 0) {
         m_globalThreads.emplace_back(new std::thread(_globalWorkerThread), [](std::thread *pThread) {
@@ -60,7 +60,7 @@ void ThreadPool::_addGlobalWorkers(size_t num_workers)
     }
 }
 
-void ThreadPool::_globalWorkerThread()
+void CxxUtils::ThreadPool::_globalWorkerThread()
 {
     while (!m_shouldStop) {
         m_globalJobsSemaphore.acquire();
