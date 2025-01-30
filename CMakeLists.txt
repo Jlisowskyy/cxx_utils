@@ -4,7 +4,7 @@
 
 set(EXEC_NAME "CxxUtils")
 set(LIB_NAME ${EXEC_NAME}Lib)
-set(TEST_NAME UnitTestTarget)
+set(TEST_NAME CxxUtilsUnitTestTarget)
 
 cmake_minimum_required(VERSION 3.29)
 project(${EXEC_NAME} C CXX)
