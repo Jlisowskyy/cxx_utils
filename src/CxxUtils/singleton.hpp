@@ -18,6 +18,12 @@ struct Singleton {
 
     static bool IsInited() { return _instance != nullptr; }
 
+    static void DeleteInstance()
+    {
+        delete _instance;
+        _instance = nullptr;
+    }
+
     protected:
     // Note: Should be used in some deriving class init api.
     static void InitInstance(T *readyInstance) { _instance = readyInstance; }
