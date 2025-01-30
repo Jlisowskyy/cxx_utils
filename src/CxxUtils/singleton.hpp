@@ -3,6 +3,8 @@
 
 #include <CxxUtils/defines.hpp>
 
+#include <cassert>
+
 CXX_UTILS_DECL_START_
 
 template <typename T>
