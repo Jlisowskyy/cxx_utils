@@ -5,11 +5,14 @@
 
 #include <cassert>
 #include <memory>
+#include <mutex>
 
 CXX_UTILS_DECL_START_
 
 template <typename T>
 struct Singleton {
+    virtual ~Singleton() = default;
+
     // Access the instance, NOTE: _instance needs to be initialized before usage
     static T &GetInstance()
     {
@@ -25,6 +28,9 @@ struct Singleton {
         _instance = nullptr;
     }
 
+    void Lock() { _mutex.lock(); }
+    void Unlock() { _mutex.unlock(); }
+
     protected:
     // Note: Should be used in some deriving class init api.
     static void InitInstance(T *readyInstance) { _instance = readyInstance; }
@@ -33,6 +39,7 @@ struct Singleton {
     Singleton() = default;
 
     static T *_instance;
+    std::mutex _mutex{};
 };
 
 template <typename T>
