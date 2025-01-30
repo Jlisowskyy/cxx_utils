@@ -34,6 +34,9 @@ struct Singleton {
     static T *_instance;
 };
 
+template <typename T>
+T *Singleton<T>::_instance{};
+
 CXX_UTILS_DECL_END_
 
 #endif  // CXX_UTILS_SINGLETON_HPP_
