@@ -2,7 +2,7 @@
 # Setup project
 # ------------------------------
 
-set(EXEC_NAME "PROJECT")
+set(EXEC_NAME "CxxUtils")
 set(LIB_NAME ${EXEC_NAME}Lib)
 set(TEST_NAME UnitTestTarget)
 
