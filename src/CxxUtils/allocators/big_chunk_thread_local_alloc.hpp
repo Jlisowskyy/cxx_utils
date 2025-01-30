@@ -4,6 +4,10 @@
 #include <cinttypes>
 #include <cstdlib>
 
+#include <CxxUtils/defines.hpp>
+
+CXX_UTILS_DECL_START_
+
 class BigChunkAllocator
 {
     struct MemNode {
@@ -75,5 +79,7 @@ class BigChunkAllocator
     size_t *_thread_tops{};
     MemNode **_heads{};
 };
+
+CXX_UTILS_DECL_END_
 
 #endif  // CXX_UTILS_ALLOCATORS_BIG_CHUNK_THREAD_LOCAL_ALLOC_HPP_

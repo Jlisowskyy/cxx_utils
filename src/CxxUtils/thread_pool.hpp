@@ -8,6 +8,10 @@
 #include <thread>
 #include <vector>
 
+#include <CxxUtils/defines.hpp>
+
+CXX_UTILS_DECL_START_
+
 class ThreadPool
 {
     // ------------------------------
@@ -118,5 +122,7 @@ class ThreadPool
     bool m_wasWaited = false;
     bool m_wasRun    = false;
 };
+
+CXX_UTILS_DECL_END_
 
 #endif  // CXX_UTILS_THREAD_POOL_HPP_

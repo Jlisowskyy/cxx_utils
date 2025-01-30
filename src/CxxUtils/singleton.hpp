@@ -1,6 +1,10 @@
 #ifndef CXX_UTILS_SINGLETON_HPP_
 #define CXX_UTILS_SINGLETON_HPP_
 
+#include <CxxUtils/defines.hpp>
+
+CXX_UTILS_DECL_START_
+
 template <typename T>
 struct Singleton {
     ~Singleton() { delete _instance; }
@@ -23,5 +27,7 @@ struct Singleton {
 
     static T *_instance;
 };
+
+CXX_UTILS_DECL_END_
 
 #endif  // CXX_UTILS_SINGLETON_HPP_

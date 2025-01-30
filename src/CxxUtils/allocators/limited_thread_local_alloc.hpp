@@ -5,6 +5,11 @@
 #include <cassert>
 #include <cstdlib>
 
+/* internal includes */
+#include <CxxUtils/defines.hpp>
+
+CXX_UTILS_DECL_START_
+
 template <typename ItemT>
 class FastTheadLocalAllocator
 {
@@ -45,5 +50,7 @@ class FastTheadLocalAllocator
     size_t _num_threads{};
     size_t _max_items_per_thread{};
 };
+
+CXX_UTILS_DECL_END_
 
 #endif  // CXX_UTILS_ALLOCATORS_LIMITED_THREAD_LOCAL_ALLOC_HPP_
