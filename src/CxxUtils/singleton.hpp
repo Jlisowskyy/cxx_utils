@@ -1,0 +1,27 @@
+#ifndef CXX_UTILS_SINGLETON_HPP_
+#define CXX_UTILS_SINGLETON_HPP_
+
+template <typename T>
+struct Singleton {
+    ~Singleton() { delete _instance; }
+
+    // Access the instance, NOTE: _instance needs to be initialized before usage
+    static T &GetInstance()
+    {
+        assert(_instance != nullptr && "Not inited Singleton instance!");
+        return *_instance;
+    }
+
+    static bool IsInited() { return _instance != nullptr; }
+
+    protected:
+    // Note: Should be used in some deriving class init api.
+    static void InitInstance(T *readyInstance) { _instance = readyInstance; }
+
+    // Note: protected constructor -> class is not able to instantiate outside of child private methods
+    Singleton() = default;
+
+    static T *_instance;
+};
+
+#endif  // CXX_UTILS_SINGLETON_HPP_
