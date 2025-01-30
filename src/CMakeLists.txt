@@ -25,17 +25,3 @@ add_library(${LIB_NAME} STATIC
 target_include_directories(${LIB_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}"
 )
-
-# ------------------------------
-# Define executable
-# ------------------------------
-
-add_executable(${EXEC_NAME}
-        main.cpp
-)
-
-# ------------------------------
-# Link lib to executable
-# ------------------------------
-
-target_link_libraries(${EXEC_NAME} ${LIB_NAME})
