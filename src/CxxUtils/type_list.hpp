@@ -1,8 +1,9 @@
 #ifndef TYPE_LIST_HPP_
 #define TYPE_LIST_HPP_
 
-// metaprogramming type list:  list<3>::type
-// list<int, int, int>::get<1>::type
+#include <CxxUtils/defines.hpp>
+
+CXX_UTILS_DECL_START_
 
 template <size_t N, class T, class... Ts>
 struct TypeList {
@@ -33,5 +34,7 @@ struct IterateTypeList<0, TypeIter> {
         func.template operator()<0, typename TypeIter<0>::type>();
     }
 };
+
+CXX_UTILS_DECL_END_
 
 #endif  // TYPE_LIST_HPP_
