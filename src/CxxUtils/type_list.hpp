@@ -15,6 +15,8 @@ struct TypeList {
 
 template <class T, class... Ts>
 struct TypeList<0, T, Ts...> {
+    static constexpr size_t size = sizeof...(Ts) + 1;
+
     using type = T;
 };
 
