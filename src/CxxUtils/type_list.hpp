@@ -7,7 +7,9 @@ CXX_UTILS_DECL_START_
 
 template <size_t N, class T, class... Ts>
 struct TypeList {
-    static_assert(N < sizeof...(Ts) + 1, "Index out of range");
+    static constexpr size_t size = sizeof...(Ts) + 1;
+
+    static_assert(N < size, "Index out of range");
     using type = typename TypeList<N - 1, Ts...>::type;
 };
 
