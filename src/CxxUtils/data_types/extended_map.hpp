@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <initializer_list>
 #include <mutex>
 #include <unordered_map>
 #include <vector>
@@ -13,7 +12,7 @@
 CXX_UTILS_DECL_START_
 
 template <typename Key, typename Value>
-class ExtendedMap
+class ExtendedMap : public std::unordered_map<Key, Value>
 {
     // ------------------------------
     // Internal types
@@ -24,16 +23,7 @@ class ExtendedMap
     public:
     using EventFuncType = void (*)(const Key &);
 
-    // ------------------------------
-    // Class creation
-    // ------------------------------
-
-    ExtendedMap(std::initializer_list<std::pair<Key, Value>> list)
-    {
-        for (const auto &[key, value] : list) {
-            map_[key] = value;
-        }
-    }
+    using std::unordered_map<Key, Value>::unordered_map;
 
     // ------------------------------
     // Class interactions
@@ -46,23 +36,20 @@ class ExtendedMap
         listeners_.erase(std::remove(listeners_.begin(), listeners_.end(), listener), listeners_.end());
     }
 
-    [[nodiscard]] const std::unordered_map<Key, Value> &GetMap() const { return map_; }
-    [[nodiscard]] std::unordered_map<Key, Value> &GetMap() { return map_; }
-
     template <AccessType type>
-    [[nodiscard]] std::vector<Key> GetKeysThread() const
+    [[nodiscard]] std::vector<Key> GetKeys()
     {
         std::vector<Key> keys;
-        keys.reserve(map_.size() + kSizeGrowEstimate);
+        keys.reserve(this->size() + kSizeGrowEstimate);
 
         if constexpr (type == AccessType::kThreadSafe) {
-            std::lock_guard lock(mutex_);
-            for (const auto &[key, _] : map_) {
-                keys.push_back(key);
+            const std::lock_guard lock(mutex_);
+            for (const auto &[key, _] : *this) {
+                keys.emplace_back(key);
             }
         } else {
-            for (const auto &[key, _] : map_) {
-                keys.push_back(key);
+            for (const auto &[key, _] : *this) {
+                keys.emplace_back(key);
             }
         }
 
@@ -70,19 +57,19 @@ class ExtendedMap
     }
 
     template <AccessType type>
-    [[nodiscard]] std::vector<Value> GetValuesThreadSafe() const
+    [[nodiscard]] std::vector<Value> GetValues()
     {
         std::vector<Value> values;
-        values.reserve(map_.size() + kSizeGrowEstimate);
+        values.reserve(this->size() + kSizeGrowEstimate);
 
         if constexpr (type == AccessType::kThreadSafe) {
-            std::lock_guard lock(mutex_);
-            for (const auto &[_, value] : map_) {
-                values.push_back(value);
+            const std::lock_guard lock(mutex_);
+            for (const auto &[_, value] : *this) {
+                values.emplace_back(value);
             }
         } else {
-            for (const auto &[_, value] : map_) {
-                values.push_back(value);
+            for (const auto &[_, value] : *this) {
+                values.emplace_back(value);
             }
         }
 
@@ -98,7 +85,6 @@ class ExtendedMap
     // ------------------------------
 
     protected:
-    std::unordered_map<Key, Value> map_;
     std::mutex mutex_;
     std::vector<EventFuncType> listeners_;
 };
