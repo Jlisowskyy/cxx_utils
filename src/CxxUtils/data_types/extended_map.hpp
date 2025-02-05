@@ -36,7 +36,7 @@ class ExtendedMap : public std::unordered_map<Key, Value>
         listeners_.erase(std::remove(listeners_.begin(), listeners_.end(), listener), listeners_.end());
     }
 
-    template <AccessType type>
+    template <AccessType type = AccessType::kThreadSafe>
     [[nodiscard]] std::vector<Key> GetKeys()
     {
         std::vector<Key> keys;
@@ -56,7 +56,7 @@ class ExtendedMap : public std::unordered_map<Key, Value>
         return keys;
     }
 
-    template <AccessType type>
+    template <AccessType type = AccessType::kThreadSafe>
     [[nodiscard]] std::vector<Value> GetValues()
     {
         std::vector<Value> values;
