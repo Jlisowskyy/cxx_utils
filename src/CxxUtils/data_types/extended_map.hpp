@@ -5,6 +5,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cinttypes>
+#include <functional>
 #include <mutex>
 #include <unordered_map>
 #include <vector>
@@ -21,19 +23,32 @@ class ExtendedMap : public std::unordered_map<Key, Value>
     static constexpr size_t kSizeGrowEstimate = 16;
 
     public:
-    using EventFuncType = void (*)(const Key &);
-
+    using EventFuncType = std::function<void(const Key &)>;
     using std::unordered_map<Key, Value>::unordered_map;
 
     // ------------------------------
     // Class interactions
     // ------------------------------
 
-    void AddListener(EventFuncType listener) { listeners_.push_back(listener); }
-    void RemoveListener(EventFuncType listener)
+    [[nodiscard("Identifier leak")]] uint64_t AddListener(EventFuncType &&listener)
     {
-        assert(std::find(listeners_.begin(), listeners_.end(), listener) != listeners_.end());
-        listeners_.erase(std::remove(listeners_.begin(), listeners_.end(), listener), listeners_.end());
+        const std::lock_guard lock(mutex_);
+        const uint64_t id = listener_id_++;
+        listeners_.emplace_back(id, std::move(listener));
+
+        return id;
+    }
+
+    void RemoveListener(const uint64_t identifier)
+    {
+        const std::lock_guard lock(mutex_);
+
+        const auto it = std::find_if(listeners_.begin(), listeners_.end(), [identifier](const auto &listener) {
+            return std::get<0>(listener) == identifier;
+        });
+
+        assert(it != listeners_.end());
+        listeners_.erase(it);
     }
 
     template <AccessType type = AccessType::kThreadSafe>
@@ -86,7 +101,9 @@ class ExtendedMap : public std::unordered_map<Key, Value>
 
     protected:
     std::mutex mutex_;
-    std::vector<EventFuncType> listeners_;
+
+    uint64_t listener_id_ = 0;
+    std::vector<std::tuple<int, EventFuncType>> listeners_;
 };
 
 CXX_UTILS_DECL_END_
