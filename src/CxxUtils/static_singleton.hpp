@@ -52,7 +52,9 @@ struct StaticSingleton {
     static T &InitInstance(Args &&...args)
     {
         assert(!IsInited());
-        new (_instance_memory) T(std::forward<Args>(args)...);
+        auto ptr = new (_instance_memory) T(std::forward<Args>(args)...);
+        assert(ptr == reinterpret_cast<T *>(_instance_memory));
+
         _is_instance_inited = true;
         return GetInstance();
     }
@@ -60,7 +62,7 @@ struct StaticSingleton {
     protected:
     /* static memory */
     static bool _is_instance_inited;
-    static unsigned char _instance_memory[sizeof(T) + alignof(T)];
+    alignas(alignof(T)) static unsigned char _instance_memory[sizeof(T) + alignof(T)];
 };
 
 template <typename T>

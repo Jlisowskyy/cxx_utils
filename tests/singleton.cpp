@@ -2,6 +2,7 @@
 
 #include <CxxUtils/singleton.hpp>
 #include <CxxUtils/static_singleton.hpp>
+#include <type_traits>
 
 using namespace CxxUtils;
 
@@ -29,7 +30,7 @@ class SSingletonInstance final : public StaticSingletonHelper
 
     ~SSingletonInstance() override = default;
 
-    int x;
+    alignas(128) int x;
 };
 
 using SSingleton = StaticSingleton<SSingletonInstance>;
@@ -57,6 +58,9 @@ TEST(Singletons, StaticSingleton)
     SSingleton::InitInstance(5);
     ASSERT_TRUE(SSingleton::IsInited());
     ASSERT_EQ(5, SSingleton::GetInstance().x);
+
+    ASSERT_EQ(0, reinterpret_cast<uint64_t>(&SSingleton::GetInstance()) % 128);
+
     SSingleton::DeleteInstance();
     ASSERT_FALSE(SSingleton::IsInited());
 }
