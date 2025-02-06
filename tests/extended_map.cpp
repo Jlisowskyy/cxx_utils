@@ -54,5 +54,5 @@ TEST_F(ExtendedMapTest, MutexLockUnlockTest)
 {
     map_.Lock();
     map_.Unlock();
-    EXPECT_TRUE(true);  // Ensures no deadlock/crash occurs
+    EXPECT_TRUE(true);
 }

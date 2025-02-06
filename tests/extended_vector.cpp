@@ -28,12 +28,12 @@ TEST_F(ExtendedVectorTest, GetValuesSafeTest)
 TEST_F(ExtendedVectorTest, ListenerManagementTest)
 {
     auto &listeners = vec_.GetListeners();
-    EXPECT_NO_THROW(listeners.NotifyListeners<ContainerEvents::kAdd>(42));  // Assuming Notify exists
+    EXPECT_NO_THROW(listeners.NotifyListeners<ContainerEvents::kAdd>(42));
 }
 
 TEST_F(ExtendedVectorTest, MutexLockUnlockTest)
 {
     vec_.Lock();
     vec_.Unlock();
-    EXPECT_TRUE(true);  // Ensures no deadlock/crash occurs
+    EXPECT_TRUE(true);
 }
