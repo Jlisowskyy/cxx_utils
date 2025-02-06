@@ -1,12 +1,10 @@
 #ifndef CXX_UTILS_DATA_TYPES_EXTENDED_MAP_HPP_
 #define CXX_UTILS_DATA_TYPES_EXTENDED_MAP_HPP_
 
+#include <CxxUtils/data_types/listeners.hpp>
 #include <CxxUtils/defines.hpp>
 
-#include <algorithm>
 #include <cassert>
-#include <cinttypes>
-#include <functional>
 #include <mutex>
 #include <unordered_map>
 #include <vector>
@@ -23,33 +21,11 @@ class ExtendedMap : public std::unordered_map<Key, Value>
     static constexpr size_t kSizeGrowEstimate = 16;
 
     public:
-    using EventFuncType = std::function<void(const Key &)>;
     using std::unordered_map<Key, Value>::unordered_map;
 
     // ------------------------------
     // Class interactions
     // ------------------------------
-
-    [[nodiscard("Identifier leak")]] uint64_t AddListener(EventFuncType &&listener)
-    {
-        const std::lock_guard lock(mutex_);
-        const uint64_t id = listener_id_++;
-        listeners_.emplace_back(id, std::move(listener));
-
-        return id;
-    }
-
-    void RemoveListener(const uint64_t identifier)
-    {
-        const std::lock_guard lock(mutex_);
-
-        const auto it = std::find_if(listeners_.begin(), listeners_.end(), [identifier](const auto &listener) {
-            return std::get<0>(listener) == identifier;
-        });
-
-        assert(it != listeners_.end());
-        listeners_.erase(it);
-    }
 
     template <AccessType type = AccessType::kThreadSafe>
     [[nodiscard]] std::vector<Key> GetKeys()
@@ -91,6 +67,8 @@ class ExtendedMap : public std::unordered_map<Key, Value>
         return values;
     }
 
+    [[nodiscard]] Listeners<ContainerEvents, const Key &> &GetListeners() { return listeners_; }
+
     [[nodiscard]] std::mutex &GetMutex() { return mutex_; }
     void Lock() { mutex_.lock(); }
     void Unlock() { mutex_.unlock(); }
@@ -100,10 +78,8 @@ class ExtendedMap : public std::unordered_map<Key, Value>
     // ------------------------------
 
     protected:
-    std::mutex mutex_;
-
-    uint64_t listener_id_ = 0;
-    std::vector<std::tuple<int, EventFuncType>> listeners_;
+    std::mutex mutex_{};
+    Listeners<ContainerEvents, const Key &> listeners_{&mutex_};
 };
 
 CXX_UTILS_DECL_END_

@@ -46,8 +46,8 @@ void TestListenerFunction(const int &key) {}
 
 TEST_F(ExtendedMapTest, ListenerManagementTest)
 {
-    const auto ident = map_.AddListener(TestListenerFunction);
-    EXPECT_NO_THROW(map_.RemoveListener(ident));
+    const auto ident = map_.GetListeners().AddListener<ContainerEvents::kAdd>(TestListenerFunction);
+    EXPECT_NO_THROW(map_.GetListeners().RemoveListener<ContainerEvents::kAdd>(ident));
 }
 
 TEST_F(ExtendedMapTest, MutexLockUnlockTest)
