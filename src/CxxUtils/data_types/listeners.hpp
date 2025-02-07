@@ -92,7 +92,7 @@ class Listeners
     protected:
     std::mutex *mutex_{};
     uint64_t listener_id_ = 0;
-    std::array<std::vector<std::tuple<int, std::function<void(Args...)>>>, static_cast<size_t>(EnumT::kLast)>
+    std::array<std::vector<std::tuple<uint64_t, std::function<void(Args...)>>>, static_cast<size_t>(EnumT::kLast)>
         listeners_{};
 };
 
