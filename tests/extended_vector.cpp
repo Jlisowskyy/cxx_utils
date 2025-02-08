@@ -28,7 +28,9 @@ TEST_F(ExtendedVectorTest, GetValuesSafeTest)
 TEST_F(ExtendedVectorTest, ListenerManagementTest)
 {
     auto &listeners = vec_.GetListeners();
-    EXPECT_NO_THROW(listeners.NotifyListeners<ContainerEvents::kAdd>(42));
+    const int a     = 1;
+
+    EXPECT_NO_THROW(listeners.NotifyListeners<ContainerEvents::kAdd>(&a));
 }
 
 TEST_F(ExtendedVectorTest, MutexLockUnlockTest)
@@ -36,4 +38,17 @@ TEST_F(ExtendedVectorTest, MutexLockUnlockTest)
     vec_.Lock();
     vec_.Unlock();
     EXPECT_TRUE(true);
+}
+
+TEST_F(ExtendedVectorTest, ClearEvent)
+{
+    bool was_invoked = false;
+    auto test_func   = [&](const int *key) {
+        was_invoked = true;
+    };
+    const auto ident = vec_.GetListeners().AddListener<ContainerEvents::kClear>(test_func);
+
+    vec_.Clear();
+
+    EXPECT_TRUE(was_invoked);
 }

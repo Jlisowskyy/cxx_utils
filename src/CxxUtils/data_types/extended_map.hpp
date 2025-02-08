@@ -67,11 +67,18 @@ class ExtendedMap : public std::unordered_map<Key, Value>
         return values;
     }
 
-    [[nodiscard]] Listeners<ContainerEvents, const Key &> &GetListeners() { return listeners_; }
+    [[nodiscard]] Listeners<ContainerEvents, const Key *> &GetListeners() { return listeners_; }
 
     [[nodiscard]] std::mutex &GetMutex() { return mutex_; }
     void Lock() { mutex_.lock(); }
     void Unlock() { mutex_.unlock(); }
+
+    void Clear()
+    {
+        const std::lock_guard lock(mutex_);
+        std::unordered_map<Key, Value>::clear();
+        listeners_.template NotifyListeners<ContainerEvents::kClear>(nullptr);
+    }
 
     // ------------------------------
     // Class fields
@@ -79,7 +86,7 @@ class ExtendedMap : public std::unordered_map<Key, Value>
 
     protected:
     std::mutex mutex_{};
-    Listeners<ContainerEvents, const Key &> listeners_{&mutex_};
+    Listeners<ContainerEvents, const Key *> listeners_{&mutex_};
 };
 
 CXX_UTILS_DECL_END_

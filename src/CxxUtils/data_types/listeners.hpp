@@ -21,6 +21,7 @@ CXX_UTILS_DECL_START_
 enum class ContainerEvents {
     kAdd,
     kRemove,
+    kClear,
     kLast,
 };
 

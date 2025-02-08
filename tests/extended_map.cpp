@@ -42,7 +42,7 @@ TEST_F(ExtendedMapTest, GetValuesThreadSafeTest)
     }
 }
 
-void TestListenerFunction(const int &key) {}
+void TestListenerFunction(const int *key) {}
 
 TEST_F(ExtendedMapTest, ListenerManagementTest)
 {
@@ -55,4 +55,17 @@ TEST_F(ExtendedMapTest, MutexLockUnlockTest)
     map_.Lock();
     map_.Unlock();
     EXPECT_TRUE(true);
+}
+
+TEST_F(ExtendedMapTest, ClearEvent)
+{
+    bool was_invoked = false;
+    auto test_func   = [&](const int *key) {
+        was_invoked = true;
+    };
+    const auto ident = map_.GetListeners().AddListener<ContainerEvents::kClear>(test_func);
+
+    map_.Clear();
+
+    EXPECT_TRUE(was_invoked);
 }
