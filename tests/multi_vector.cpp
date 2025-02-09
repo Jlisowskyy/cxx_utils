@@ -67,6 +67,18 @@ TEST_F(MultiVectorTest, ClearTest)
     EXPECT_EQ(0, vec_.size<int>());
     EXPECT_EQ(0, vec_.size<float>());
     EXPECT_EQ(0, vec_.size<double>());
+
+    SetUp();
+    vec_.FullClear();
+
+    EXPECT_TRUE(vec_.IsEmpty());
+    EXPECT_EQ(0, vec_.size<int>());
+    EXPECT_EQ(0, vec_.size<float>());
+    EXPECT_EQ(0, vec_.size<double>());
+
+    EXPECT_TRUE(vec_.empty<int>());
+    EXPECT_TRUE(vec_.empty<float>());
+    EXPECT_TRUE(vec_.empty<double>());
 }
 
 TEST_F(MultiVectorTest, SingleTForeach)
