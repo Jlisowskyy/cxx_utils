@@ -194,12 +194,12 @@ static void TestMultiVecPerf()
             std::chrono::duration_cast<std::chrono::microseconds>(new_frame - last_frame).count();
         last_frame = new_frame;
 
-        multi_vec.Foreach([&delta_time_ms](auto& elem) {
+        multi_vec.Foreach([&delta_time_ms](auto& elem) FORCE_INLINE__ {
             elem.Calculate(static_cast<double>(delta_time_ms) / 1e+6);
         });
 
         double sum = 0.0;
-        multi_vec.Foreach([&sum](auto& elem) {
+        multi_vec.Foreach([&sum](auto& elem) FORCE_INLINE__ {
             sum += elem.Get();
         });
         total_sum += sum;

@@ -14,6 +14,7 @@
 #include <CxxUtils/data_types/extended_vector.hpp>
 #include <CxxUtils/data_types/listeners.hpp>
 #include <CxxUtils/data_types/multi_vector.hpp>
+#include <CxxUtils/template_helpers.hpp>
 
 std::vector<std::shared_ptr<std::thread>> CxxUtils::ThreadPool::m_globalThreads{};
 volatile std::atomic<bool> CxxUtils::ThreadPool::m_shouldStop{false};
