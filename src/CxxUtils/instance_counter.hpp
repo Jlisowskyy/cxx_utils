@@ -17,8 +17,8 @@ class InstanceCounter
     public:
     InstanceCounter() : instance_id_(instance_count_++) {}
 
-    [[nodiscard]] static size_t GetInstanceCount() noexcept { return instance_count_; }
-    [[nodiscard]] size_t GetInstanceID() const noexcept { return instance_id_; }
+    NDSCRD_ FAST_CALL_ static size_t GetInstanceCount() noexcept { return instance_count_; }
+    NDSCRD_ FAST_CALL_ size_t GetInstanceID() const noexcept { return instance_id_; }
 };
 
 template <typename T>

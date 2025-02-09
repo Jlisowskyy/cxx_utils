@@ -13,8 +13,8 @@ CXX_UTILS_DECL_START_
 
 struct StaticSingletonHelper {
     virtual ~StaticSingletonHelper() = default;
-    void Lock() { _mutex.lock(); }
-    void Unlock() { _mutex.unlock(); }
+    FAST_CALL_ void Lock() { _mutex.lock(); }
+    FAST_CALL_ void Unlock() { _mutex.unlock(); }
 
     protected:
     // Note: protected constructor -> class is not able to instantiate outside of child private methods
@@ -34,22 +34,22 @@ struct StaticSingleton {
     // Static Accessors and Utilities
     // ------------------------------------
 
-    static T &GetInstance()
+    FAST_CALL_ static T &GetInstance()
     {
         assert(_is_instance_inited && "Not inited Singleton instance!");
         return *reinterpret_cast<T *>(_instance_memory);
     }
 
-    static bool IsInited() { return _is_instance_inited; }
+    FAST_CALL_ static bool IsInited() { return _is_instance_inited; }
 
-    static void DeleteInstance()
+    FAST_CALL_ static void DeleteInstance()
     {
         GetInstance().~T();
         _is_instance_inited = false;
     }
 
     template <typename... Args>
-    static T &InitInstance(Args &&...args)
+    FAST_CALL_ static T &InitInstance(Args &&...args)
     {
         assert(!IsInited());
         auto ptr = new (_instance_memory) T(std::forward<Args>(args)...);

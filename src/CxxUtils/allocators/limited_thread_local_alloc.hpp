@@ -21,13 +21,13 @@ class FastTheadLocalAllocator
         _counters = new size_t[num_threads];
     }
 
-    ~FastTheadLocalAllocator()
+    FAST_CALL_ ~FastTheadLocalAllocator()
     {
         delete[] _items;
         delete[] _counters;
     }
 
-    [[nodiscard]] ItemT *Alloc(const size_t thread_idx)
+    NDSCRD_ FAST_CALL_ ItemT *Alloc(const size_t thread_idx)
     {
         const size_t idx = thread_idx * _max_items_per_thread + _counters[thread_idx]++;
         assert(_counters[thread_idx] < _max_items_per_thread);
@@ -35,7 +35,7 @@ class FastTheadLocalAllocator
         return _items + idx;
     }
 
-    [[nodiscard]] ItemT *Get(const size_t thread_idx, const size_t idx)
+    NDSCRD_ FAST_CALL_ ItemT *Get(const size_t thread_idx, const size_t idx)
     {
         assert(idx < _max_items_per_thread);
         assert(thread_idx < _num_threads);

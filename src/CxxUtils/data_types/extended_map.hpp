@@ -28,7 +28,7 @@ class ExtendedMap : public std::unordered_map<Key, Value>
     // ------------------------------
 
     template <AccessType type = AccessType::kThreadSafe>
-    [[nodiscard]] std::vector<Key> GetKeys()
+    NDSCRD_ std::vector<Key> GetKeys()
     {
         std::vector<Key> keys;
         keys.reserve(this->size() + kSizeGrowEstimate);
@@ -48,7 +48,7 @@ class ExtendedMap : public std::unordered_map<Key, Value>
     }
 
     template <AccessType type = AccessType::kThreadSafe>
-    [[nodiscard]] std::vector<Value> GetValues()
+    NDSCRD_ std::vector<Value> GetValues()
     {
         std::vector<Value> values;
         values.reserve(this->size() + kSizeGrowEstimate);
@@ -67,13 +67,13 @@ class ExtendedMap : public std::unordered_map<Key, Value>
         return values;
     }
 
-    [[nodiscard]] Listeners<ContainerEvents, const Key *> &GetListeners() { return listeners_; }
+    NDSCRD_ FAST_CALL_ Listeners<ContainerEvents, const Key *> &GetListeners() { return listeners_; }
 
-    [[nodiscard]] std::mutex &GetMutex() { return mutex_; }
-    void Lock() { mutex_.lock(); }
-    void Unlock() { mutex_.unlock(); }
+    NDSCRD_ FAST_CALL_ std::mutex &GetMutex() { return mutex_; }
+    WRAP_CALL_ void Lock() { mutex_.lock(); }
+    WRAP_CALL_ void Unlock() { mutex_.unlock(); }
 
-    void Clear()
+    FAST_CALL_ void Clear()
     {
         const std::lock_guard lock(mutex_);
         std::unordered_map<Key, Value>::clear();

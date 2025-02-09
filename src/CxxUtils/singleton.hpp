@@ -14,26 +14,26 @@ struct Singleton {
     virtual ~Singleton() = default;
 
     // Access the instance, NOTE: _instance needs to be initialized before usage
-    static T &GetInstance()
+    FAST_CALL_ static T &GetInstance()
     {
         assert(_instance != nullptr && "Not inited Singleton instance!");
         return *_instance;
     }
 
-    static bool IsInited() { return _instance != nullptr; }
+    FAST_CALL_ static bool IsInited() { return _instance != nullptr; }
 
-    static void DeleteInstance()
+    FAST_CALL_ static void DeleteInstance()
     {
         delete _instance;
         _instance = nullptr;
     }
 
-    void Lock() { _mutex.lock(); }
-    void Unlock() { _mutex.unlock(); }
+    WRAP_CALL_ void Lock() { _mutex.lock(); }
+    WRAP_CALL_ void Unlock() { _mutex.unlock(); }
 
     protected:
     // Note: Should be used in some deriving class init api.
-    static void InitInstance(T *readyInstance) { _instance = readyInstance; }
+    FAST_CALL_ static void InitInstance(T *readyInstance) { _instance = readyInstance; }
 
     // Note: protected constructor -> class is not able to instantiate outside of child private methods
     Singleton() = default;

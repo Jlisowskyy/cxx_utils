@@ -26,19 +26,19 @@ class ExtendedVector : public std::vector<Value>
     // Class interactions
     // ------------------------------
 
-    [[nodiscard]] std::vector<Value> GetValuesSafe()
+    NDSCRD_ std::vector<Value> GetValuesSafe()
     {
         const std::lock_guard lock(mutex_);
         return *this;
     }
 
-    [[nodiscard]] Listeners<ContainerEvents, const Value *> &GetListeners() { return listeners_; }
+    NDSCRD_ FAST_CALL_ Listeners<ContainerEvents, const Value *> &GetListeners() { return listeners_; }
 
-    [[nodiscard]] std::mutex &GetMutex() { return mutex_; }
-    void Lock() { mutex_.lock(); }
-    void Unlock() { mutex_.unlock(); }
+    NDSCRD_ FAST_CALL_ std::mutex &GetMutex() { return mutex_; }
+    FAST_CALL_ void Lock() { mutex_.lock(); }
+    FAST_CALL_ void Unlock() { mutex_.unlock(); }
 
-    void Clear()
+    FAST_CALL_ void Clear()
     {
         const std::lock_guard lock(mutex_);
         std::vector<Value>::clear();

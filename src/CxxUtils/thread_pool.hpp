@@ -26,7 +26,7 @@ class ThreadPool
 
         virtual ~_taskBase() = default;
 
-        void Run()
+        FAST_CALL_ void Run()
         {
             _run(m_threadIdx);
             m_sem->release();
@@ -49,7 +49,7 @@ class ThreadPool
         {
         }
 
-        void _run(uint32_t thread_idx) override
+        FAST_CALL_ void _run(uint32_t thread_idx) override
         {
             std::apply(m_func, std::tuple_cat(std::make_tuple(thread_idx), m_args));
         }
@@ -57,7 +57,7 @@ class ThreadPool
 
     public:
     struct AsyncBlob {
-        void Await()
+        FAST_CALL_ void Await()
         {
             assert(!m_wasWaited);
             m_semaphore.acquire();
@@ -121,7 +121,7 @@ class ThreadPool
 
     void Wait();
 
-    void Reset() { Reset(m_numThreads); }
+    WRAP_CALL_ void Reset() { Reset(m_numThreads); }
 
     void Reset(const uint32_t numThreads);
 

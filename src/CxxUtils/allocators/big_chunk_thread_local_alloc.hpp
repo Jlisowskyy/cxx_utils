@@ -51,7 +51,7 @@ class BigChunkAllocator
     }
 
     template <typename T, typename... Args>
-    [[nodiscard]] T *Alloc(const size_t thread_idx, Args... args)
+    NDSCRD_ T *Alloc(const size_t thread_idx, Args... args)
     {
         const size_t size_needed = sizeof(T);
         const size_t cur_top     = _thread_tops[thread_idx];

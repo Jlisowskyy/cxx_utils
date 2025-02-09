@@ -1,5 +1,5 @@
-#ifndef TYPE_LIST_HPP_
-#define TYPE_LIST_HPP_
+#ifndef CXX_UTILS_TYPE_LIST_HPP_
+#define CXX_UTILS_TYPE_LIST_HPP_
 
 #include <CxxUtils/defines.hpp>
 
@@ -23,7 +23,7 @@ struct TypeList<0, T, Ts...> {
 template <size_t N, template <size_t> class TypeIter>
 struct IterateTypeList {
     template <class Callable>
-    static void Apply(Callable&& func)
+    FAST_CALL_ static void Apply(Callable&& func)
     {
         func.template operator()<N, typename TypeIter<N>::type>();
         IterateTypeList<N - 1, TypeIter>::Apply(std::forward<Callable>(func));
@@ -33,7 +33,7 @@ struct IterateTypeList {
 template <template <size_t> class TypeIter>
 struct IterateTypeList<0, TypeIter> {
     template <class Callable>
-    static void Apply(Callable&& func)
+    FAST_CALL_ static void Apply(Callable&& func)
     {
         func.template operator()<0, typename TypeIter<0>::type>();
     }
@@ -41,4 +41,4 @@ struct IterateTypeList<0, TypeIter> {
 
 CXX_UTILS_DECL_END_
 
-#endif  // TYPE_LIST_HPP_
+#endif  // CXX_UTILS_TYPE_LIST_HPP_

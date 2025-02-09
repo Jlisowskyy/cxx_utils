@@ -53,7 +53,7 @@ class Listeners
     // ------------------------------
 
     template <EnumT event>
-    [[nodiscard("Identifier leak")]] uint64_t AddListener(std::function<void(Args...)> &&listener)
+    [[nodiscard("Identifier leak")]] FAST_CALL_ uint64_t AddListener(std::function<void(Args...)> &&listener)
     {
         const std::lock_guard lock(*mutex_);
         const uint64_t id = listener_id_++;
@@ -79,7 +79,7 @@ class Listeners
     }
 
     template <EnumT event>
-    void NotifyListeners(Args... args)
+    FAST_CALL_ void NotifyListeners(Args... args)
     {
         for (const auto &[_, listener] : listeners_[static_cast<size_t>(event)]) {
             listener(args...);
