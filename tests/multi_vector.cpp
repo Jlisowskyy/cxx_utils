@@ -120,3 +120,23 @@ TEST_F(MultiVectorTest, FullForeach)
 
     EXPECT_EQ(1.0 + 2.0 + 3.0, sum);
 }
+
+TEST_F(MultiVectorTest, Copying)
+{
+    auto vec = vec_;
+
+    EXPECT_EQ(1, vec_.front<int>());
+    EXPECT_EQ(2.0f, vec_.front<float>());
+    EXPECT_EQ(3.0, vec_.front<double>());
+}
+
+TEST_F(MultiVectorTest, Moving)
+{
+    auto vec = std::move(vec_);
+
+    EXPECT_EQ(1, vec.front<int>());
+    EXPECT_EQ(2.0f, vec.front<float>());
+    EXPECT_EQ(3.0, vec.front<double>());
+
+    EXPECT_TRUE(vec_.IsEmpty());
+}
